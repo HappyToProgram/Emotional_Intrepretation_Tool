@@ -5,6 +5,7 @@ import librosa  # Audio processing library
 import numpy as np
 import IPython.display  # For playing the audio in jupyter notebook
 import librosa.display  # For displaying spectrograms
+import time
 
 label_directory = 'C:/Users/erics/PycharmProjects/INFO442_2/IEMOCAP_full_release/Session*/dialog/EmoEvaluation/Categorical/*.txt'
 audio_directory = 'C:/Users/erics/PycharmProjects/INFO442_2/IEMOCAP_full_release/AudioFiles'
@@ -27,6 +28,7 @@ def transform(audio_file):
 
 
 for file in glob.glob(label_directory):
+    start_time = time.time()
     f = open(file, "r")
     for line in f.readlines():
         line = re.sub('[:;]', '', line)
@@ -41,3 +43,4 @@ for file in glob.glob(label_directory):
             wav_dir = '/' + line[0][:14] + '/'
             audio_file = audio_directory + wav_dir + line[0] + '.wav'
             transform(audio_file)
+    print(f'Total Time: {time.time() - start_time}')
