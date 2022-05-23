@@ -20,11 +20,18 @@ while True:
         time.sleep(5)
         print("Recording Audio")
         myrecording = sd.rec(duration * fs, samplerate=fs, channels=2, dtype='float32')
-        sd.wait()
-        print("Audio recording complete , Play Audio")
-        sd.play(myrecording, fs)
-        sd.wait()
-        print("Play Audio Complete")
+        #TODO
+            #Transform through instructions from Hajun on how to do it properly
+            #Load audio data correctly into model for fitting
+
+        #TODO
+            #Take results from model and match with labels
+            #Print result
+
+        #print("Audio recording complete , Play Audio")
+        #sd.play(myrecording, fs)
+        #sd.wait()
+        #print("Play Audio Complete")
         break
     elif input == 'e':
         break
