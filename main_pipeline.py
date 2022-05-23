@@ -1,9 +1,6 @@
 import sounddevice as sd
-import numpy as np
-import scipy.io.wavfile as wav
+import time
 import tensorflow as tf
-
-tf.keras.utils.set_random_seed(442)
 labeldict = {
     'Sadness': 0,
     'Excited': 1,
@@ -13,13 +10,21 @@ labeldict = {
     'Other' : 5
 }
 while True:
-    fs = 44100
-    duration = 5  # seconds
-    myrecording = sd.rec(duration * fs, samplerate=fs, channels=2, dtype='float32')
-    print("Recording Audio")
-    sd.wait()
-    print("Audio recording complete , Play Audio")
-    sd.play(myrecording, fs)
-    sd.wait()
-    print("Play Audio Complete")
-    break
+    print("Press Q and Enter to start")
+    print("Press E and Enter to exit")
+    input = input().lower()
+    if input == 'q':  # if key 'q' is pressed
+        fs = 44100
+        duration = 5  # seconds
+        print("Recording begins in 5 seconds, you have # seconds to record.")
+        time.sleep(5)
+        print("Recording Audio")
+        myrecording = sd.rec(duration * fs, samplerate=fs, channels=2, dtype='float32')
+        sd.wait()
+        print("Audio recording complete , Play Audio")
+        sd.play(myrecording, fs)
+        sd.wait()
+        print("Play Audio Complete")
+        break
+    elif input == 'e':
+        break
