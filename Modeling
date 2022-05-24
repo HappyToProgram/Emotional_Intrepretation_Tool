@@ -1,0 +1,15 @@
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import librosa
+import multiprocessing as mp
+import re
+import pickle
+import time
+# Random Seed for Reproducibility
+tf.keras.utils.set_random_seed(442)
+# GPU Usage
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+# Set memory growth
+# tf.config.experimental.set_memory_growth(tf.config.list_physical_devices('GPU')[0], True)

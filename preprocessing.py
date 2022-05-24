@@ -1,9 +1,7 @@
 import glob
 import re
-import os
 import librosa  # Audio processing library
 import numpy as np
-import IPython.display  # For playing the audio in jupyter notebook
 import librosa.display  # For displaying spectrograms
 
 label_directory = 'C:/Users/erics/PycharmProjects/INFO442_2/IEMOCAP_full_release/Session*/dialog/EmoEvaluation/Categorical/*.txt'
