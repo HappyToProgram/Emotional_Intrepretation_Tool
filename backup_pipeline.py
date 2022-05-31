@@ -3,44 +3,19 @@ import time
 import soundfile as sf
 import librosa
 import pandas as pd
-from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
 from keras.models import model_from_json
 import numpy as np
 
-labeldict = {
-    'Sadness': 0,
-    'Excited': 1,
-    'Happiness': 2,
-    'Anger': 3,
-    'Frustration': 4,
-    'Other': 5
-}
 
-lb = LabelEncoder()
-
-
-def pre_processing(audio_data):
-    STFT = np.abs(librosa.stft(audio_data))
-    # Zero-padding:
-    x = keras.preprocessing.sequence.pad_sequences(STFT, padding="post", maxlen=1489, dtype=np.float32)  # maxlen is after discovering the whole training data
-    # Reshaping so that the order is not messed up
-    x = x.reshape(-1, 1025, 1489)
-    # Transposing so that we have timesteps in dim 1
-    x = x.transpose((0, 2, 1))
-    return x
-
-
-while True:
-    print("Press Q and Enter to start")
-    print("Press E and Enter to exit")
-    input = input().lower()
+if __name__ == '__main__':
+    input = input("Press Q and Enter to start or E and Enter to Exit: ")
     if input == 'q':  # if key 'q' is pressed
 
         #recording
         fs = 44100
         duration = 5  # seconds
-        print("Recording begins in 5 seconds, you have 5 seconds to record.")
+        print("Recording begins in 5 seconds, you have 2.5 seconds to record.")
         time.sleep(5)
         print("Recording Audio")
         myrecording = sd.rec(duration * fs, samplerate=fs, channels=1, dtype='float32')
@@ -48,12 +23,13 @@ while True:
         sf.write('output.wav', myrecording, fs)
 
         #model loading
-        json_file = open('C:/Users/erics/PycharmProjects/INFO442_2/sr_model', 'r')
+        lb = LabelEncoder()
+        json_file = open('C:/Users/erics/PycharmProjects/INFO442_2/Models/sr_model', 'r')
         loaded_model_json = json_file.read()
         json_file.close()
         loaded_model = model_from_json(loaded_model_json)
         # load weights into new sr_model
-        loaded_model.load_weights("C:/Users/erics/PycharmProjects/INFO442_2/Emotion_Voice_Detection_Model.h5")
+        loaded_model.load_weights("C:/Users/erics/PycharmProjects/INFO442_2/Weights/Emotion_Voice_Detection_Model.h5")
         print("Loaded model from disk")
         X, sample_rate = librosa.load('C:/Users/erics/PycharmProjects/INFO442_2/output.wav',
                                       res_type='kaiser_fast', duration=2.5,sr=22050*2,offset=0.5)
@@ -76,6 +52,7 @@ while True:
 
 
         # Results
+        print("\nEmotion:")
         if liveabc == 0:
             print("Female_angry")
         elif liveabc == 1:
@@ -97,7 +74,5 @@ while True:
         elif liveabc == 9:
             print("Male sad")
 
-        break
-
     elif input == 'e':
-        break
+        print('Exiting')

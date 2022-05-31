@@ -4,33 +4,51 @@ import librosa
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
-import cv2
+import soundfile as sf
 
-labeldict = {
-    'Sadness': 0,
-    'Excited': 1,
-    'Happiness': 2,
-    'Anger': 3,
-    'Frustration': 4,
-    'Other': 5
-}
+# LABELDICT:
+labeldict={0: 'Sadness',
+    1: 'Excited',
+    2: 'Happiness',
+    3: 'Anger',
+    4: 'Frustration',
+    5: 'Other'}
 
 
-def pre_processing(audio_data):
-    STFT = np.abs(librosa.stft(audio_data))
-    # Zero-padding:
-    x = keras.preprocessing.sequence.pad_sequences(STFT, padding="post", maxlen=1489, dtype=np.float32)  # maxlen is after discovering the whole training data
+def preprocess_input(path): # Returns a list of x (batch_size, timesteps, feature)
+    # Preprocess x:
+    x = get_mel(path)
     # Reshaping so that the order is not messed up
-    x = x.reshape(-1, 1025, 1489)
+    x = x.reshape(1, 256, -1)
     # Transposing so that we have timesteps in dim 1
     x = x.transpose((0, 2, 1))
+    # Convert to tensor and of type tf.float16 for faster operation
+    x = tf.convert_to_tensor(x, dtype=tf.float16)
     return x
 
 
-while True:
-    print("Press Q and Enter to start")
-    print("Press E and Enter to exit")
-    input = input().lower()
+# Decode the one hot encoded:
+def decode_emotion(one_hot):
+    idx_arg_max = np.argmax(one_hot)
+    return labeldict[idx_arg_max]
+
+
+def get_mel(path):
+    data, _ = librosa.load(path, sr=44100)
+    mels = librosa.feature.melspectrogram(y=data, sr=44100, n_mels=256)
+    return mels
+
+
+def predict_emotion(path):
+    data = preprocess_input(path)
+    predicted = model(data, training=False)
+    result = decode_emotion(predicted)
+    print(f"\nThe emotion associated with the file is {result}")
+    return result
+
+
+if __name__ == '__main__':
+    input = input("Press Q and Enter to start or E and Enter to Exit: ")
     if input == 'q':  # if key 'q' is pressed
         fs = 44100
         duration = 5  # seconds
@@ -39,15 +57,12 @@ while True:
         print("Recording Audio")
         myrecording = sd.rec(duration * fs, samplerate=fs, channels=1, dtype='float32')
         sd.wait()
+        sf.write('output.wav', myrecording, fs)
 
-        # TODO
-        transformed_data = pre_processing(np.squeeze(myrecording))
-        print(transformed_data)
+        # Load Model
+        model = keras.models.load_model('C:/Users/erics/PycharmProjects/INFO442_2/Models/MEL_LSTM.h5')
 
-        # TODO
-        # Take results from model and match with labels
-        # Print result
+        predict_emotion('C:/Users/erics/PycharmProjects/INFO442_2/output.wav')
 
-        break
     elif input == 'e':
-        break
+        print("Exiting")
