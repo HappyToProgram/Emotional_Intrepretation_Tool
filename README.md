@@ -12,3 +12,4 @@ database](https://ecs.utdallas.edu/research/researchlabs/msp-lab/publications/Bu
 - `Data_Preprocessing.ipynb`: A Jupyter notebook with an EDA of Audio data in general. It covers the basics of Sampling Rate, Short-time Fourier Transform, and Spectrograms 
 - `main_pipeline.py` : Implementation of the model and the preprocessing part. It is the tool that we use to predict.
 - `sort_emotion_data.sh` : shell script to sort the files so that each audio file belongs to a directory named with the corresponding emotion.
+- `Models` and `Weights` : directories used for loading the models in the pipleline code.
